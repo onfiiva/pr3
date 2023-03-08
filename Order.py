@@ -175,7 +175,7 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury):
     file = open(f'C:\\Users\\kiruk\\Python\\prac3\\Cheques\\Cheque{currentIdCheque}.txt', 'w')
     file.write(f"Заказ №{currentIdCheque}\n"
                f"Время: {timeOrder}\n"
-               f"Пользователь: +{phone}\n"
+               f"Пользователь: {phone}\n"
                "\n"
                "Состав заказа: \n"
                "\n"

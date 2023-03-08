@@ -28,12 +28,12 @@ create table [Admin]
 	[ID_Admin] [int] not null identity(1,1) primary key,
 	[Phone_Admin] [VARCHAR] (15) not null unique check ([Phone_Admin] like ('+[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
 	[Password_Admin] [VARCHAR] (50) not null,
-	[Balance_Admin] [int] not null default(1000)
+	[Balance_Admin] [int] not null default(10000)
 )
 go
 
 insert into [Admin] ([Phone_Admin], [Password_Admin], [Balance_Admin]) values
-('+79013650372', '1234', 1000)
+('+79013650372', '1234', 10000)
 go
 
 select * from [Admin]
@@ -83,12 +83,12 @@ create table [User]
 	[Loyality_ID] [int] not null references [Loyality] (ID_Loyality) on delete cascade,
 	[Phone_User] [VARCHAR](15) not null unique check ([Phone_User] like ('+[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
 	[Password_User] [VARCHAR](50) not null,
-	[Balance_User] [int] not null default(1000)
+	[Balance_User] [int] not null default(10000)
 )
 go
 
 insert into [User] ([Loyality_ID], [Phone_User], [Password_User], [Balance_User]) values
-(1, '+79169473055', '1234', 1000)
+(1, '+79169473055', '1234', 10000)
 go
 
 select * from [User]
@@ -196,13 +196,3 @@ go
 
 select * from [Cheque_Hachapury]
 go
-
-select SCOPE_IDENTITY() from [Hachapury]
-
-declare @idHachapury int;
-set @idHachapury = (select SCOPE_IDENTITY() from [Hachapury]);
-print @idHachapury
-
-declare @idIngridient VARCHAR(50);
-set @idIngridient = (select [Name_Ingridient] from [Ingridient] where [Type_ID] = 1);
-print @idIngridient
