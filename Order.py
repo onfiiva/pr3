@@ -71,7 +71,7 @@ def Order(userId):
             print("Заканчиваем сборку... \n"
                 "Добавляются ингридиенты:\n")
             for i in range(len(ingridients)):
-                print(" | ", ingridients[i], " | ")
+                print(nameIngridient[ingridients[i]], " - ", costIngridient[ingridients[i]], "Рублей \n")
                     
             time.sleep(5)
 
@@ -97,49 +97,50 @@ def Order(userId):
                 currentIdCheque = idCheque[id]
 
             Cheque.ChequeSumUpd(userId, currentIdCheque, endIdHachapury)
+            
+            print("Собрали ваш хачапури :)")
 
-            commit = input("Собрали ваш хачапури :)\n"
-                "Завершить оформление заказа?\n").lower()
+        commit = input("Завершить оформление заказа?\n").lower()
 
-            if commit == "yes" or commit == "да":
-                print("Завершаем оформление заказа...\n")
-                time.sleep(2)
+        if commit == "yes" or commit == "да":
+            print("Завершаем оформление заказа...\n")
+            time.sleep(2)
                     
-                CloseOrder(userId, currentIdCheque, endIdHachapury)
-            elif commit == "no" or commit == "нет":
-                try:
-                    toOrder = input("Выберите действие: \n"
+            CloseOrder(userId, currentIdCheque, endIdHachapury)
+        elif commit == "no" or commit == "нет":
+            try:
+                toOrder = input("Выберите действие: \n"
                     "1 - Продолжить оформление заказа\n"
                     "2 - Сбросить заказ\n")
-                except ValueError:
-                    print("Введены неверные данные")
-                    Cheque.DropCheque(userId, currentIdCheque)
-                    time.sleep(2)
-                    Order(userId)
-                if toOrder > 0 and toOrder <= 2:
-                    match toOrder:
-                        case '1':
-                            print("Продолжаем заказ...\n")
-                            time.sleep(2)
-                            Order(userId)
-                        case '2':
-                            print("Сбрасываем заказ...\n")
-                            time.sleep(2)
-                            Cheque.DropCheque(userId, currentIdCheque)
-                        case _:
-                            print("Сбрасываем заказ...\n")
-                            time.sleep(2)
-                            Cheque.DropCheque(userId, currentIdCheque)
-                else:
-                    print("Неверное действие. Возврат к оформлению заказа.")
-                    time.sleep(2)
-                    Cheque.DropCheque(userId, currentIdCheque)
-                    Order(userId)
-            else:
-                print("Неверное действие. Возврат к оформлению заказа.")
+            except ValueError:
+                print("Введены неверные данные")
                 Cheque.DropCheque(userId, currentIdCheque)
                 time.sleep(2)
                 Order(userId)
+            if toOrder > 0 and toOrder <= 2:
+                match toOrder:
+                    case '1':
+                        print("Продолжаем заказ...\n")
+                        time.sleep(2)
+                        Order(userId)
+                    case '2':
+                        print("Сбрасываем заказ...\n")
+                        time.sleep(2)
+                        Cheque.DropCheque(userId, currentIdCheque)
+                    case _:
+                        print("Сбрасываем заказ...\n")
+                        time.sleep(2)
+                        Cheque.DropCheque(userId, currentIdCheque)
+            else:
+                print("Неверное действие. Возврат к оформлению заказа.")
+                time.sleep(2)
+                Cheque.DropCheque(userId, currentIdCheque)
+                Order(userId)
+        else:
+            print("Неверное действие. Возврат к оформлению заказа.")
+            Cheque.DropCheque(userId, currentIdCheque)
+            time.sleep(2)
+            Order(userId)
     elif count == 0:
         User.User(userId)
     else:
@@ -191,6 +192,7 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury):
         sumIngridient = costIngridient * count
         
         cursor.execute(f"update [Ingridient] set [Count_Ingridient] = {countIngridient - count} where [ID_Ingridient] = {ingridientId[id]}")
+        cnxn.commit()
 
         file.write(f"{nameIngridient}, {count} шт., {costIngridient} рублей за шт., {sumIngridient} рублей итого.\n")
                
@@ -200,5 +202,14 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury):
     file.close()
 
     print(f"Заказ оформлен! Чек №{currentIdCheque}")
+    if (sum > 200):
+        cursor.execute(f"update [User] set [Loyality_ID] = 2 where [ID_User] = {userId}")
+        cnxn.commit()
+    elif (sum > 300):
+        cursor.execute(f"update [User] set [Loyality_ID] = 3 where [ID_User] = {userId}")
+        cnxn.commit()
+    elif (sum > 500):
+        cursor.execute(f"update [User] set [Loyality_ID] = 4 where [ID_User] = {userId}")
+        cnxn.commit()
     time.sleep(2)
-    User(userId)
+    User.User(userId)

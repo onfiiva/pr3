@@ -2,7 +2,7 @@ from os import system, name
 import time
 import phonenumbers
 import maskpass
-import Registration
+import Registration as Registr
 import Authorization
 import Voice
 
@@ -23,8 +23,13 @@ def main():
         match enter:
             case 1:
                 print("Регистрация у Ашота\n")
-                inputPhone = input("Введите телефон\n+7")
-                phone_number = "+7" + inputPhone
+                try:
+                    inputPhone = int(input("Введите телефон\n+7"))
+                except ValueError:
+                    print("Неправильно введен номер телефона.")
+                    time.sleep(2)
+                    main()
+                phone_number = "+7" + str(inputPhone)
                 try_number = phonenumbers.parse(phone_number, "RU")
                 if phonenumbers.is_valid_number(try_number):
                     if ("+" not in phone_number):

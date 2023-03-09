@@ -1,8 +1,8 @@
 import speech_recognition as sr
 import pyttsx3
 import Main
-import Registration
-import Authorization
+import Registration as registr
+import Authorization 
 import time
 def Voice(place, phone_number, password):
     print("Проверка на робота.\n"
@@ -18,7 +18,7 @@ def Voice(place, phone_number, password):
         engine.say(order)
         engine.runAndWait()
         if place == 0:
-            Registration.Reg(phone_number, password)
+            registr.Regss(phone_number, password)
         else:
             Authorization.Auth(phone_number, password)
     else:

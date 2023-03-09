@@ -5,7 +5,8 @@ import random
 import Main
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
-def Reg(phone, password):
+
+def Regss(phone, password):
     _ = system('cls')
     loyality = 1
     confirmReg = True
