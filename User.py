@@ -6,7 +6,7 @@ import Order
 import Main
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
-def User(userId):
+def Users(userId):
     _ = system('cls')
     for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = '{userId}'"):
          balance = row.Balance_User
@@ -22,7 +22,7 @@ def User(userId):
     except ValueError:
         print("Введены неверные данные")
         time.sleep(2)
-        User(userId)
+        Users(userId)
 
     if function > 0 and function <= 4:
         match function:
@@ -36,7 +36,7 @@ def User(userId):
                 Main.main()
     else:
         print("Неправильная функция.")
-        User(userId)
+        Users(userId)
 
 def UserHistory(userId):
     print("Собираем историю...")
@@ -58,7 +58,7 @@ def UserHistory(userId):
         print("У вас еще нет истории. \n"
               "Попробуйте заказать наш хачапури!\n")
     input("Выйти на главную")
-    User(userId)
+    Users(userId)
 
 def UserLoyality(userId):
     _ = system('cls')
@@ -68,4 +68,4 @@ def UserLoyality(userId):
         discount = discountLoyality * 100
     print(f"Ваша программа лояльности: {nameLoyality}, скидка: {discount}%\n")
     input("Выйти на главную")
-    User(userId)
+    Users(userId)

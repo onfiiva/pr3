@@ -142,7 +142,7 @@ def Order(userId):
             time.sleep(2)
             Order(userId)
     elif count == 0:
-        User.User(userId)
+        User.UsersTest(userId)
     else:
         print("Введены неверные данные")
         time.sleep(2)
@@ -159,8 +159,12 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury):
         timeOrder = row.Time_Order
         ear = row.Ear
     
-    
-    balance -= sum
+    for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = {userId}"):
+        loyalityDiscount = row.Discount
+        nameLoyality = row.Name_Loyality
+    discount = sum * loyalityDiscount
+    print(f"Ваша скидка : {discount}")
+    balance -= (sum - discount)
     if (balance >= 0):
         cursor.execute(f"update [User] set [Balance_User] = {balance} where [ID_User] = {userId}")
         cnxn.commit()
@@ -212,4 +216,4 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury):
         cursor.execute(f"update [User] set [Loyality_ID] = 4 where [ID_User] = {userId}")
         cnxn.commit()
     time.sleep(2)
-    User.User(userId)
+    User.UsersTest(userId)

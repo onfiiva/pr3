@@ -30,7 +30,7 @@ def Auth(phone, password):
             for row in cursor.execute(f"select * from [User] where [Phone_User] = {phone}"):
                 userId = row.ID_User
             isAuthorized = True
-            User.User(userId)
+            User.Users(userId)
     if isAuthorized == False:
         print("Неправильно введенные данные")
         time.sleep(2)
