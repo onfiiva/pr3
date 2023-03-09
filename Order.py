@@ -173,7 +173,7 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury):
     for row in cursor.execute(f"select * from [Hachapury_Ingridient] where [Hachapury_ID] = {endIdHachapury}"):
         ingridientId.append(row.Ingridient_ID)
     
-    file = open(f'C:\\Users\\kiruk\\Python\\prac3\\Cheques\\Cheque{currentIdCheque}.txt', 'w')
+    file = open(f'\\Cheques\\Cheque{currentIdCheque}.txt', 'w')
     file.write(f"Заказ №{currentIdCheque}\n"
                f"Время: {timeOrder}\n"
                f"Пользователь: {phone}\n"
