@@ -7,7 +7,6 @@ cursor = cnxn.cursor()
 def Reg(phone, password):
     _ = system('cls')
     loyality = 1
-    balance = 1000
     confirmReg = True
     phone_user, phone_admin = [], []
     for row in cursor.execute("select * from [User]"):
@@ -25,6 +24,8 @@ def Reg(phone, password):
             confirmReg = False
     
     if confirmReg == True:
+        random.seed()
+        balance = random.randint(1000, 10000)
         cursor.execute("insert into [User] ([Loyality_ID], [Phone_User], [Password_User], [Balance_User]) values (?, ?, ?, ?)", 
                     loyality, phone, password, balance)
         cnxn.commit()
