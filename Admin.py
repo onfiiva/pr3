@@ -56,7 +56,7 @@ def AdminUsersHistory(adminId):
         time.sleep(2)
         AdminUsersHistory(adminId)
 
-    if idUser > 0 and idUser < len(phoneUser):
+    if idUser > 0 and idUser <= len(phoneUser):
         for row in cursor.execute(f"select * from [Cheque] where [User_ID] = {idUser}"):
             chequeId.append(row.ID_Cheque)
         for id in range(len(chequeId)):
@@ -93,5 +93,18 @@ def AdminUsersLoyality(adminId):
         idUser = int(input("Выберите пользователя для просмотра карты лояльности: \n"))
     except ValueError:
         print("Введены неверные данные")
+        time.sleep(2)
+        AdminUsersLoyality(adminId)
+
+    if (idUser > 0 and idUser <= len(phoneUser)):
+        for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = {idUser}"):
+            nameLoyality = row.Name_Loyality
+            discountLoyality = row.Discount
+            discount = discountLoyality * 100
+        print(f"Ваша программа лояльности: {nameLoyality}, скидка: {discount}%\n")
+        quit = input("Выйти на главную")
+        Admin(adminId)
+    else:
+        print("Неверное действие.")
         time.sleep(2)
         AdminUsersLoyality(adminId)
