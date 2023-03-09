@@ -1,6 +1,7 @@
 import pyodbc
 from os import system, name
 import time
+import random
 import Main
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
