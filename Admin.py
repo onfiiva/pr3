@@ -28,11 +28,11 @@ def Admin(adminId):
 
     match function:
         case 1:
-            Supply(adminId)
+            Supply.Supply(adminId)
         case 2:
-            AdminUsersHistory(adminId)
+            Supply.AdminUsersHistory(adminId)
         case 3:
-            AdminUsersLoyality(adminId)
+            Supply.AdminUsersLoyality(adminId)
         case 4:
             Main.main()
 
@@ -60,8 +60,8 @@ def AdminUsersHistory(adminId):
         for row in cursor.execute(f"select * from [Cheque] where [User_ID] = {idUser}"):
             chequeId.append(row.ID_Cheque)
         for id in range(len(chequeId)):
-            if (os.path.exists(f'C:\\Users\\kiruk\\Python\\prac3\\Cheques\\Cheque{chequeId[id]}.txt')):
-                file = open(f'C:\\Users\\kiruk\\Python\\prac3\\Cheques\\Cheque{chequeId[id]}.txt', 'r')
+            if (os.path.exists(f'\\Cheques\\Cheque{chequeId[id]}.txt')):
+                file = open(f'\\Cheques\\Cheque{chequeId[id]}.txt', 'r')
                 strings = file.readlines()
                 file.close()
                 print("\n")
