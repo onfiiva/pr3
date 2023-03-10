@@ -2,7 +2,7 @@ import pyodbc
 from os import system, name
 import os.path
 import time
-import Order
+import toOrder
 import random
 import datetime
 now = datetime.datetime.now()
@@ -50,4 +50,4 @@ def DropCheque(userId, currentIdCheque):
     
     print("Возвращаемся в главное меню...")
     time.sleep(2)
-    Order.Order(userId)
+    toOrder.toOrder(userId)

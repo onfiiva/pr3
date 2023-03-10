@@ -2,6 +2,8 @@ import pyodbc
 from os import system, name
 import os.path
 import time
+import pathlib
+from pathlib import Path
 import Main
 import Supply
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
@@ -30,38 +32,42 @@ def Admin(adminId):
         case 1:
             Supply.Supply(adminId)
         case 2:
-            Supply.AdminUsersHistory(adminId)
+            AdminUsersHistory(adminId)
         case 3:
-            Supply.AdminUsersLoyality(adminId)
+            AdminUsersLoyality(adminId)
         case 4:
-            Main.main()
+            Main.mainwindow()
 
 def AdminUsersHistory(adminId):
     _ = system('cls')
-    phoneUser, passwordUser, balanceUser, chequeId = [], [], [], []
+    userId, phoneUser, passwordUser, balanceUser, chequeId = [], [], [], [], []
     countFiles = 0
+    dir_path = pathlib.Path.cwd()
     for row in cursor.execute("select * from [User]"):
+        userId.append(row.ID_User)
         phoneUser.append(row.Phone_User)
         passwordUser.append(row.Password_User)
         balanceUser.append(row.Balance_User)
 
     print("Пользователи:\n")
-    for i in range(len(phoneUser)):
-        print(f"{i+1} - {phoneUser[i]} - {passwordUser[i]} - {balanceUser[i]}")
+    for i in range(len(userId)):
+        print(f"{userId[i]} - {phoneUser[i]} - {passwordUser[i]} - {balanceUser[i]}")
     
     try:
-        idUser = int(input("Выберите пользователя для просмотра истории: \n"))
+        idUser = int(input("Выберите пользователя для просмотра истории: \n"
+                           "0 - Выйти на главную.\n"))
     except ValueError:
         print("Введены неверные данные")
         time.sleep(2)
         AdminUsersHistory(adminId)
 
-    if idUser > 0 and idUser <= len(phoneUser):
+    if idUser > 0 and idUser <= len(userId) and userId.count(idUser) > 0:
         for row in cursor.execute(f"select * from [Cheque] where [User_ID] = {idUser}"):
             chequeId.append(row.ID_Cheque)
         for id in range(len(chequeId)):
-            if (os.path.exists(f'\\Cheques\\Cheque{chequeId[id]}.txt')):
-                file = open(f'\\Cheques\\Cheque{chequeId[id]}.txt', 'r')
+            directory = Path(pathlib.Path.cwd(), 'Cheques', f'Cheque{chequeId[id]}.txt')
+            if (os.path.exists(directory)):
+                file = open(directory, 'r')
                 strings = file.readlines()
                 file.close()
                 print("\n")
@@ -72,6 +78,8 @@ def AdminUsersHistory(adminId):
             print("У пользователя еще нет истории. \n")
         input("Выйти на главную.")
         Admin(adminId)
+    elif (idUser == 0):
+        Admin(adminId)
     else:
         print("Неверное действие")
         time.sleep(2)
@@ -79,30 +87,34 @@ def AdminUsersHistory(adminId):
 
 def AdminUsersLoyality(adminId):
     _ = system('cls')
-    phoneUser, passwordUser, balanceUser = [], [], []
+    userId, phoneUser, passwordUser, balanceUser = [], [], [], []
     for row in cursor.execute("select * from [User]"):
+        userId.append(row.ID_User)
         phoneUser.append(row.Phone_User)
         passwordUser.append(row.Password_User)
         balanceUser.append(row.Balance_User)
 
     print("Пользователи:\n")
-    for i in range(len(phoneUser)):
-        print(f"{i+1} - {phoneUser[i]} - {passwordUser[i]} - {balanceUser[i]}")
+    for i in range(len(userId)):
+        print(f"{userId[i]} - {phoneUser[i]} - {passwordUser[i]} - {balanceUser[i]}")
     
     try:
-        idUser = int(input("Выберите пользователя для просмотра карты лояльности: \n"))
+        idUser = int(input("\nВыберите пользователя для просмотра карты лояльности: \n"
+                           "0 - Выйти на главную.\n"))
     except ValueError:
         print("Введены неверные данные")
         time.sleep(2)
         AdminUsersLoyality(adminId)
 
-    if (idUser > 0 and idUser <= len(phoneUser)):
+    if (idUser > 0 and idUser <= len(userId) and userId.count(idUser) > 0):
         for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = {idUser}"):
             nameLoyality = row.Name_Loyality
             discountLoyality = row.Discount
             discount = discountLoyality * 100
         print(f"Ваша программа лояльности: {nameLoyality}, скидка: {discount}%\n")
-        quit = input("Выйти на главную")
+        input("Выйти на главную")
+        Admin(adminId)
+    elif (idUser == 0):
         Admin(adminId)
     else:
         print("Неверное действие.")

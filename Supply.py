@@ -2,7 +2,9 @@ import pyodbc
 from os import system, name
 import os.path
 import time
-import Admin
+import pathlib
+from pathlib import Path
+import toAdmin
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
 def Supply(adminId):
@@ -79,9 +81,7 @@ def Supply(adminId):
             time.sleep(2)
             Supply(adminId)
     elif idIngridient == 0:
-        print("Выход на главную...")
-        time.sleep(2)
-        Admin.Admin(adminId)
+        toAdmin.toAdmin(adminId)
     else:
         print("Некорректные данные")
         time.sleep(2)

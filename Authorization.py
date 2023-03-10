@@ -2,7 +2,7 @@ import pyodbc
 from os import system, name
 import Main
 import Admin
-import User
+import toUser
 import time
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
@@ -29,9 +29,11 @@ def Auth(phone, password):
         if phone == phone_user[id] and password == pass_user[id]:
             for row in cursor.execute(f"select * from [User] where [Phone_User] = {phone}"):
                 userId = row.ID_User
+                print(f"userId = {userId}")
+                time.sleep(1)
             isAuthorized = True
-            User.Users(userId)
+            toUser.toUser(userId)
     if isAuthorized == False:
         print("Неправильно введенные данные")
         time.sleep(2)
-        Main.main()
+        Main.mainwindow()

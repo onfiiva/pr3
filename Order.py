@@ -2,12 +2,14 @@ import pyodbc
 from os import system, name
 import os.path
 import time
-import User
+import pathlib
+from pathlib import Path
 import Cheque
+import CloseOrder
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
 
-def Order(userId):
+def Orders(userId):
     _ = system('cls')
     try:
         count = int(input("Сколько хачапури желаете заказать?\n"
@@ -15,7 +17,7 @@ def Order(userId):
     except ValueError:
         print("Введены неверные данные")
         time.sleep(2)
-        Order(userId)
+        Orders(userId)
     if (count > 0):
         Cheque.Cheque(userId, count)
 
@@ -47,7 +49,7 @@ def Order(userId):
                 except ValueError:
                     print("Введены неверные данные")
                     time.sleep(2)
-                    Order(userId)
+                    Orders(userId)
                         
                 if (ingridient <= countIngridient and ingridient > 0):
                     ingridients.append(ingridient)
@@ -55,7 +57,7 @@ def Order(userId):
                     print("Ну, нет - так нет...\n")
                 else:
                     print("Неправильный ингридиент.")
-                    Order(userId)
+                    Orders(userId)
 
                 continueAdd = input("Добавить еще один ингредиент?\n").lower()
                 if continueAdd == "yes" or continueAdd == "да":
@@ -66,7 +68,7 @@ def Order(userId):
                     print("Ошибка выбора\n"
                     "Сброс заказа хачапури...\n")
                     time.sleep(2)
-                    Order(userId)
+                    Orders(userId)
 
             print("Заканчиваем сборку... \n"
                 "Добавляются ингридиенты:\n")
@@ -105,8 +107,8 @@ def Order(userId):
         if commit == "yes" or commit == "да":
             print("Завершаем оформление заказа...\n")
             time.sleep(2)
-                    
-            CloseOrder(userId, currentIdCheque, endIdHachapury)
+            count = 1        
+            CloseOrder.CloseOrder(userId, currentIdCheque, endIdHachapury, count)
         elif commit == "no" or commit == "нет":
             try:
                 toOrder = input("Выберите действие: \n"
@@ -116,13 +118,13 @@ def Order(userId):
                 print("Введены неверные данные")
                 Cheque.DropCheque(userId, currentIdCheque)
                 time.sleep(2)
-                Order(userId)
+                Orders(userId)
             if toOrder > 0 and toOrder <= 2:
                 match toOrder:
                     case '1':
                         print("Продолжаем заказ...\n")
                         time.sleep(2)
-                        Order(userId)
+                        Orders(userId)
                     case '2':
                         print("Сбрасываем заказ...\n")
                         time.sleep(2)
@@ -135,85 +137,16 @@ def Order(userId):
                 print("Неверное действие. Возврат к оформлению заказа.")
                 time.sleep(2)
                 Cheque.DropCheque(userId, currentIdCheque)
-                Order(userId)
+                Orders(userId)
         else:
             print("Неверное действие. Возврат к оформлению заказа.")
             Cheque.DropCheque(userId, currentIdCheque)
             time.sleep(2)
-            Order(userId)
+            Orders(userId)
     elif count == 0:
-        User.UsersTest(userId)
+        CloseOrder.CloseOrder(userId, currentIdCheque, endIdHachapury, count)
     else:
         print("Введены неверные данные")
         time.sleep(2)
-        Order(userId)
+        Orders(userId)
 
-def CloseOrder(userId, currentIdCheque, endIdHachapury):
-    for row in cursor.execute(f"select * from [User] where [ID_User] = {userId}"):
-        balance = row.Balance_User
-    for row in cursor.execute(f"select * from [Cheque] inner join [User] on [User_ID] = [ID_User] where [ID_Cheque] = {currentIdCheque}"):
-        phone = row.Phone_User
-        count = row.Count_Hachapury
-        cost = row.Cost_Hachapury
-        sum = row.Sum_Order
-        timeOrder = row.Time_Order
-        ear = row.Ear
-    
-    for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = {userId}"):
-        loyalityDiscount = row.Discount
-        nameLoyality = row.Name_Loyality
-    discount = sum * loyalityDiscount
-    print(f"Ваша скидка : {discount}")
-    balance -= (sum - discount)
-    if (balance >= 0):
-        cursor.execute(f"update [User] set [Balance_User] = {balance} where [ID_User] = {userId}")
-        cnxn.commit()
-    else:
-        print("Недостаточно денег на счету.")
-        time.sleep(2)
-        Order(userId)
-
-    ingridientId = []
-    for row in cursor.execute(f"select * from [Hachapury_Ingridient] where [Hachapury_ID] = {endIdHachapury}"):
-        ingridientId.append(row.Ingridient_ID)
-    
-    file = open(f'\\Cheques\\Cheque{currentIdCheque}.txt', 'w')
-    file.write(f"Заказ №{currentIdCheque}\n"
-               f"Время: {timeOrder}\n"
-               f"Пользователь: {phone}\n"
-               "\n"
-               "Состав заказа: \n"
-               "\n"
-               f"Хачапури: {count} шт., {cost} руб. за шт.\n"
-               "Ингридиенты: \n")
-    
-    for id in range(len(ingridientId)):
-        for row in cursor.execute(f"select * from [Ingridient] where [ID_Ingridient] = {ingridientId[id]}"):
-            nameIngridient = row.Name_Ingridient
-            costIngridient = row.Cost_Ingridient
-            countIngridient = row.Count_Ingridient
-        count = ingridientId.count(ingridientId[id])
-        sumIngridient = costIngridient * count
-        
-        cursor.execute(f"update [Ingridient] set [Count_Ingridient] = {countIngridient - count} where [ID_Ingridient] = {ingridientId[id]}")
-        cnxn.commit()
-
-        file.write(f"{nameIngridient}, {count} шт., {costIngridient} рублей за шт., {sumIngridient} рублей итого.\n")
-               
-    file.write(f"Ухо: {ear}\n"
-                "\n"
-               f"Итого: {sum}")
-    file.close()
-
-    print(f"Заказ оформлен! Чек №{currentIdCheque}")
-    if (sum > 200):
-        cursor.execute(f"update [User] set [Loyality_ID] = 2 where [ID_User] = {userId}")
-        cnxn.commit()
-    elif (sum > 300):
-        cursor.execute(f"update [User] set [Loyality_ID] = 3 where [ID_User] = {userId}")
-        cnxn.commit()
-    elif (sum > 500):
-        cursor.execute(f"update [User] set [Loyality_ID] = 4 where [ID_User] = {userId}")
-        cnxn.commit()
-    time.sleep(2)
-    User.UsersTest(userId)

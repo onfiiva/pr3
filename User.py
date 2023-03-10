@@ -2,6 +2,8 @@ import pyodbc
 from os import system, name
 import os.path
 import time
+import pathlib
+from pathlib import Path
 import Order
 import Main
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
@@ -27,13 +29,13 @@ def Users(userId):
     if function > 0 and function <= 4:
         match function:
             case 1:
-                Order.Order(userId)
+                Order.Orders(userId)
             case 2:
                 UserHistory(userId)
             case 3:
                 UserLoyality(userId)
             case 4:
-                Main.main()
+                Main.mainwindow()
     else:
         print("Неправильная функция.")
         Users(userId)
@@ -46,8 +48,9 @@ def UserHistory(userId):
     for row in cursor.execute(f"select * from [Cheque] where [User_ID] = {userId}"):
         chequeId.append(row.ID_Cheque)
     for id in range(len(chequeId)):
-        if (os.path.exists(f'C:\\Users\\kiruk\\Python\\prac3\\Cheques\\Cheque{chequeId[id]}.txt')):
-            file = open(f'C:\\Users\\kiruk\\Python\\prac3\\Cheques\\Cheque{chequeId[id]}.txt', 'r')
+        directory = Path(pathlib.Path.cwd(), 'Cheques', f'Cheque{chequeId[id]}.txt')
+        if (os.path.exists(directory)):
+            file = open(directory, 'r')
             strings = file.readlines()
             file.close()
             print("\n")
