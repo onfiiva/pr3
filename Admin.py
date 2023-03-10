@@ -42,7 +42,6 @@ def AdminUsersHistory(adminId):
     _ = system('cls')
     userId, phoneUser, passwordUser, balanceUser, chequeId = [], [], [], [], []
     countFiles = 0
-    dir_path = pathlib.Path.cwd()
     for row in cursor.execute("select * from [User]"):
         userId.append(row.ID_User)
         phoneUser.append(row.Phone_User)
