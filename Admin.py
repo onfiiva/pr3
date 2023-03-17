@@ -4,7 +4,7 @@ import os.path
 import time
 import pathlib
 from pathlib import Path
-import Main
+#import Main
 import Supply
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
@@ -13,7 +13,6 @@ def Admin(adminId):
     _ = system('cls')
     for row in cursor.execute(f"select * from [Admin] where [ID_Admin] = '{adminId}'"):
          balance = row.Balance_Admin
-    os.system="cls"
 
     print("Ашот")
     print(f"У вас на счету {balance} рублей.\n")
@@ -28,15 +27,21 @@ def Admin(adminId):
         time.sleep(2)
         Admin(adminId)
 
-    match function:
-        case 1:
-            Supply.Supply(adminId)
-        case 2:
-            AdminUsersHistory(adminId)
-        case 3:
-            AdminUsersLoyality(adminId)
-        case 4:
-            Main.mainwindow()
+    if function > 0 and function <= 4:
+        match function:
+            case 1:
+                Supply.Supply(adminId)
+            case 2:
+                AdminUsersHistory(adminId)
+            case 3:
+                AdminUsersLoyality(adminId)
+            #case 4:
+                #Main.mainwindow()
+    else:
+        print("Неправильная функция.")
+        Admin(adminId)
+
+    
 
 def AdminUsersHistory(adminId):
     _ = system('cls')

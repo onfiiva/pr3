@@ -1,8 +1,9 @@
 from os import system, name
 import time
-import phonenumbers
 import maskpass
 import Voice
+import smtplib as smtp
+import random
 
 def mainwindow():
     _ = system('cls')
@@ -21,36 +22,81 @@ def mainwindow():
         match enter:
             case 1:
                 print("Регистрация у Ашота\n")
+                
+                email = input("Введите почту\n")
+                
+                if (not ("@" and ".") in email):
+                    print("Неверно введена почта.")
+                    time.sleep(2)
+                    mainwindow()
+                
+                
+                #Посыл кода на почту
+                smtpEmail = "test_test23r43@mail.ru"
+                code = random.randint(100,999)
+                smptObj = smtp.SMTP("smtp.mail.ru", 587)
+                smptObj.starttls()
+                smptObj.login(smtpEmail, "m7x9NpBJaHR7mm12Hntu")
+                smptObj.sendmail(smtpEmail, email, f"Your code {code}")
+                smptObj.quit()
+
                 try:
-                    inputPhone = int(input("Введите телефон\n+7"))
+                    confirmCode = int(input("Вам на почту выслан код подтверждения.\n"
+                      "Введите его\n"))
                 except ValueError:
-                    print("Неправильно введен номер телефона.")
+                    print("Введены неверные данные")
                     time.sleep(2)
                     mainwindow()
-                phone_number = "+7" + str(inputPhone)
-                try_number = phonenumbers.parse(phone_number, "RU")
-                if phonenumbers.is_valid_number(try_number):
-                    if ("+" not in phone_number):
-                        phone_number = "+" + phone_number
+
+                if code == confirmCode:
+
+                    password = maskpass.askpass(prompt="Введите пароль: \n", mask="*")
+                    confirmPassword = maskpass.askpass(prompt="Подтвердите пароль: \n", mask="*")
+                    if (password == confirmPassword):
+                        place = 0
+                        Voice.Voicemethod(place, email, password)
+                    else:
+                        print("Пароли не совпадают. Попробуйте заново.")
+                        mainwindow()
                 else:
-                    print("Неверно введен номер телефона.")
+                    print("Неверный код.")
                     time.sleep(2)
-                    mainwindow()
-                password = maskpass.askpass(prompt="Введите пароль: \n", mask="*")
-                confirmPassword = maskpass.askpass(prompt="Подтвердите пароль: \n", mask="*")
-                if (password == confirmPassword):
-                    place = 0
-                    Voice.Voicemethod(place, phone_number, password)
-                else:
-                    print("Пароли не совпадают. Попробуйте заново.")
                     mainwindow()
                 
             case 2:
                 print("Авторизация у Ашота")
-                phone_number = input("Введите телефон \n")
-                password = maskpass.askpass(prompt="Введите пароль: \n", mask="*")
-                place = 1
-                Voice.Voicemethod(place, phone_number, password)
+                email = input("Введите почту \n")
+
+                if (not ("@" and ".") in email):
+                    print("Неверно введена почта.")
+                    time.sleep(2)
+                    mainwindow()
+
+                #Посыл кода на почту
+                smtpEmail = "test_test23r43@mail.ru"
+                code = random.randint(100,999)
+                smptObj = smtp.SMTP("smtp.mail.ru", 587)
+                smptObj.starttls()
+                smptObj.login(smtpEmail, "m7x9NpBJaHR7mm12Hntu")
+                smptObj.sendmail(smtpEmail, email, f"Your code {code}")
+                smptObj.quit()
+
+                try:
+                    confirmCode = int(input("Вам на почту выслан код подтверждения.\n"
+                      "Введите его\n"))
+                except ValueError:
+                    print("Введены неверные данные")
+                    time.sleep(2)
+                    mainwindow()
+                
+                if code == confirmCode:
+                    password = maskpass.askpass(prompt="Введите пароль: \n", mask="*")
+                    place = 1
+                    Voice.Voicemethod(place, email, password)
+                else:
+                    print("Неверный код.")
+                    time.sleep(2)
+                    mainwindow()
             case 3:
                 print("Сворачиваем лавочку...\n")
                 time.sleep(2)

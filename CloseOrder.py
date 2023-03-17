@@ -20,6 +20,7 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury, count):
         sum = row.Sum_Order
         timeOrder = row.Time_Order
         ear = row.Ear
+        noticed = row.Noticed
     
     for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = {userId}"):
         loyalityDiscount = row.Discount
@@ -66,6 +67,7 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury, count):
         file.write(f"{nameIngridient}, {count} шт., {costIngridient} рублей за шт., {sumIngridient} рублей итого.\n")
                
     file.write(f"Ухо: {ear}\n"
+               f"Пользователь заметил: {noticed}\n"
                 "\n"
                f"Итого: {sum}")
     file.close()

@@ -31,11 +31,19 @@ def Cheque(userId, count):
     currentTime = now.strftime("%d-%m-%Y %H:%M")
     random.seed()
     if random.randint(1, 10) > 5:
-        ear = 1
+        ear = True
+        random.seed()
+        if random.randint(1, 10) > 5:
+            detected = True
+        else:
+            detected = False
     else:
-        ear = 0
-    cursor.execute(f"insert into [Cheque] ([User_ID], [Count_Hachapury], [Cost_Hachapury], [Sum_Order], [Time_Order], [Ear]) values (?, ?, ?, ?, ?, ?)", 
-                   (userId, count, cost, sum, currentTime, ear))
+        ear = False
+        detected = False
+    
+    
+    cursor.execute("insert into [Cheque] ([User_ID], [Count_Hachapury], [Cost_Hachapury], [Sum_Order], [Time_Order], [Ear], [Noticed]) values (?, ?, ?, ?, ?, ?, ?)", 
+                   (userId, count, cost, sum, currentTime, (1 if ear else 0), (1 if detected else 0)))
     cnxn.commit()
 
 def DropCheque(userId, currentIdCheque):

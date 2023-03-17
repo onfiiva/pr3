@@ -5,9 +5,10 @@ import time
 import pathlib
 from pathlib import Path
 import Order
-import Main
+#import Main
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
+
 def Users(userId):
     _ = system('cls')
     for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = '{userId}'"):
@@ -35,7 +36,8 @@ def Users(userId):
             case 3:
                 UserLoyality(userId)
             case 4:
-                Main.mainwindow()
+                #Main.mainwindow()
+                exit()
     else:
         print("Неправильная функция.")
         Users(userId)

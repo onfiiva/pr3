@@ -171,12 +171,13 @@ create table [Cheque]
 	[Cost_Hachapury] [int] not null,
 	[Sum_Order] [int] not null,
 	[Time_Order] [datetime] not null,
-	[Ear] [bit] not null
+	[Ear] [bit] not null,
+	[Noticed] [bit] not null
 )
 go
 
-insert into [Cheque] ([User_ID], [Count_Hachapury], [Cost_Hachapury], [Sum_Order], [Time_Order], [Ear]) values
-(1, 1, 290, 290, SYSDATETIME(), 0)
+insert into [Cheque] ([User_ID], [Count_Hachapury], [Cost_Hachapury], [Sum_Order], [Time_Order], [Ear], [Noticed]) values
+(1, 1, 290, 290, SYSDATETIME(), 0, 0)
 go
 
 select * from [Cheque]

@@ -1,7 +1,7 @@
 import speech_recognition as sr
 import pyttsx3
-import Main
-import Registration as registr
+#import Main
+import Registration
 import Authorization 
 import time
 def Voicemethod(place, phone_number, password):
@@ -15,7 +15,7 @@ def Voicemethod(place, phone_number, password):
     exit = int(input())
     if exit == 0:
         if place == 0:
-            registr.Regss(phone_number, password)
+            Registration.Regss(phone_number, password)
         else:
             Authorization.Auth(phone_number, password)
 
