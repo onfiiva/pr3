@@ -26,14 +26,14 @@ go
 create table [Admin]
 (
 	[ID_Admin] [int] not null identity(1,1) primary key,
-	[Phone_Admin] [VARCHAR] (15) not null unique check ([Phone_Admin] like ('+[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
+	[Email_Admin] [VARCHAR] (200) not null unique check ([Email_Admin] like ('%@%.%')),
 	[Password_Admin] [VARCHAR] (50) not null,
 	[Balance_Admin] [int] not null default(10000)
 )
 go
 
-insert into [Admin] ([Phone_Admin], [Password_Admin], [Balance_Admin]) values
-('+79013650372', '1234', 10000)
+insert into [Admin] ([Email_Admin], [Password_Admin], [Balance_Admin]) values
+('isip_o.d.petrov@mpt.ru', '1234', 10000)
 go
 
 select * from [Admin]
@@ -47,13 +47,13 @@ create table [Type_Ingridient]
 go
 
 insert into [Type_Ingridient] ([Name_Type]) values
-('пїЅпїЅпїЅпїЅ'),
-('пїЅпїЅпїЅ'),
-('пїЅпїЅпїЅпїЅпїЅпїЅ'),
-('пїЅпїЅпїЅпїЅ'),
-('пїЅпїЅпїЅпїЅ'),
-('пїЅпїЅпїЅпїЅпїЅпїЅ'),
-('пїЅпїЅпїЅпїЅпїЅ')
+('Мука'),
+('Сыр'),
+('Зелень'),
+('Мясо'),
+('Яйцо'),
+('Творог'),
+('Масло')
 go
 
 select * from [Type_Ingridient]
@@ -81,14 +81,14 @@ create table [User]
 (
 	[ID_User] [int] not null identity(1,1) primary key,
 	[Loyality_ID] [int] not null references [Loyality] (ID_Loyality) on delete cascade,
-	[Phone_User] [VARCHAR](15) not null unique check ([Phone_User] like ('+[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')),
+	[Email_User] [VARCHAR](200) not null unique check ([Email_User] like ('%@%.%')),
 	[Password_User] [VARCHAR](50) not null,
 	[Balance_User] [int] not null default(10000)
 )
 go
 
-insert into [User] ([Loyality_ID], [Phone_User], [Password_User], [Balance_User]) values
-(1, '+79169473055', '1234', 10000)
+insert into [User] ([Loyality_ID], [Email_User], [Password_User], [Balance_User]) values
+(1, 'olp201915@', '1234', 10000)
 go
 
 select * from [User]
@@ -105,20 +105,20 @@ create table [Ingridient]
 go
 
 insert into [Ingridient] ([Type_ID], [Name_Ingridient], [Cost_Ingridient], [Count_Ingridient]) values
-(1, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 10, 100),
-(1, 'пїЅпїЅпїЅпїЅпїЅпїЅ', 15, 100),
-(2, 'пїЅпїЅпїЅпїЅпїЅ', 20, 100),
-(2, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 20, 100),
-(3, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ', 10, 100),
-(3, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 10, 100),
-(4, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 50, 100),
-(4, 'пїЅпїЅпїЅпїЅ', 50, 100),
-(5, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 50, 100),
-(5, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 50, 100),
-(6, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 20, 100),
-(6, 'пїЅпїЅпїЅпїЅпїЅ', 20, 100),
-(7, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 30, 100),
-(7, 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ', 45, 100)
+(1, 'Пшеничная', 10, 100),
+(1, 'Ржаная', 15, 100),
+(2, 'Гауда', 20, 100),
+(2, 'Российский', 20, 100),
+(3, 'Зеленый Лук', 10, 100),
+(3, 'Петрушка', 10, 100),
+(4, 'Ветчина', 50, 100),
+(4, 'Сало', 50, 100),
+(5, 'Куриное', 50, 100),
+(5, 'Перепелиное', 50, 100),
+(6, 'Коровий', 20, 100),
+(6, 'Козий', 20, 100),
+(7, 'Сливочное', 30, 100),
+(7, 'Оливковое', 45, 100)
 go
 
 select * from [Ingridient]
