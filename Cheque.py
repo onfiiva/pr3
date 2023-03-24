@@ -12,8 +12,9 @@ cursor = cnxn.cursor()
 def ChequeSumUpd(userId, currentIdCheque, endIdHachapury):
     sum = 100
     ingridientId = []
-    for row in cursor.execute(f"select * from [Hachapury_Ingridient] where [Hachapury_ID] = {endIdHachapury}"):
-        ingridientId.append(row.Ingridient_ID)
+    for i in range(len(endIdHachapury)):
+        for row in cursor.execute(f"select * from [Hachapury_Ingridient] where [Hachapury_ID] = {endIdHachapury[i]}"):
+            ingridientId.append(row.Ingridient_ID)
     
     for id in range(len(ingridientId)):
         for row in cursor.execute(f"select * from [Ingridient] where [ID_Ingridient] = {ingridientId[id]}"):

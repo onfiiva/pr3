@@ -4,7 +4,6 @@ import os.path
 import time
 import pathlib
 from pathlib import Path
-#import Main
 import Supply
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
@@ -35,8 +34,8 @@ def Admin(adminId):
                 AdminUsersHistory(adminId)
             case 3:
                 AdminUsersLoyality(adminId)
-            #case 4:
-                #Main.mainwindow()
+            case 4:
+                exit()
     else:
         print("Неправильная функция.")
         Admin(adminId)
@@ -49,7 +48,7 @@ def AdminUsersHistory(adminId):
     countFiles = 0
     for row in cursor.execute("select * from [User]"):
         userId.append(row.ID_User)
-        phoneUser.append(row.Phone_User)
+        phoneUser.append(row.Email_User)
         passwordUser.append(row.Password_User)
         balanceUser.append(row.Balance_User)
 
@@ -94,7 +93,7 @@ def AdminUsersLoyality(adminId):
     userId, phoneUser, passwordUser, balanceUser = [], [], [], []
     for row in cursor.execute("select * from [User]"):
         userId.append(row.ID_User)
-        phoneUser.append(row.Phone_User)
+        phoneUser.append(row.Email_User)
         passwordUser.append(row.Password_User)
         balanceUser.append(row.Balance_User)
 

@@ -9,7 +9,7 @@ import Order
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
 
-def Users(userId):
+def Users(userId, adminId):
     _ = system('cls')
     for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = '{userId}'"):
          balance = row.Balance_User
@@ -30,11 +30,11 @@ def Users(userId):
     if function > 0 and function <= 4:
         match function:
             case 1:
-                Order.Orders(userId)
+                Order.Orders(adminId, userId)
             case 2:
-                UserHistory(userId)
+                UserHistory(adminId, userId)
             case 3:
-                UserLoyality(userId)
+                UserLoyality(adminId, userId)
             case 4:
                 #Main.mainwindow()
                 exit()
@@ -42,7 +42,7 @@ def Users(userId):
         print("Неправильная функция.")
         Users(userId)
 
-def UserHistory(userId):
+def UserHistory(adminId, userId):
     print("Собираем историю...")
     time.sleep(2)
     chequeId = []
@@ -63,9 +63,9 @@ def UserHistory(userId):
         print("У вас еще нет истории. \n"
               "Попробуйте заказать наш хачапури!\n")
     input("Выйти на главную")
-    Users(userId)
+    Users(adminId, userId)
 
-def UserLoyality(userId):
+def UserLoyality(adminId, userId):
     _ = system('cls')
     for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = {userId}"):
         nameLoyality = row.Name_Loyality
@@ -73,4 +73,4 @@ def UserLoyality(userId):
         discount = discountLoyality * 100
     print(f"Ваша программа лояльности: {nameLoyality}, скидка: {discount}%\n")
     input("Выйти на главную")
-    Users(userId)
+    Users(adminId, userId)

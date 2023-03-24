@@ -16,6 +16,7 @@ def Auth(email, password):
         pass_user.append(row.Password_User)
     
     for row in cursor.execute("select * from [Admin]"):
+        adminId = row.ID_Admin
         email_admin.append(row.Email_Admin)
         pass_admin.append(row.Password_Admin)
     
@@ -30,7 +31,7 @@ def Auth(email, password):
             for row in cursor.execute(f"select * from [User] where [Email_User] = '{email}'"):
                 userId = row.ID_User
             isAuthorized = True
-            toUser.toUser(userId)
+            toUser.toUser(userId, adminId)
     if isAuthorized == False:
         print("Неправильно введенные данные")
         time.sleep(2)

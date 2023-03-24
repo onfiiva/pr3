@@ -32,14 +32,14 @@ def mainwindow():
                 
                 
                 #Посыл кода на почту
-                smtpEmail = "test_test23r43@mail.ru"
+                smtpEmail = "fm_test_email_send@mail.ru"
                 code = random.randint(100,999)
                 smptObj = smtp.SMTP("smtp.mail.ru", 587)
                 smptObj.starttls()
-                smptObj.login(smtpEmail, "m7x9NpBJaHR7mm12Hntu")
+                smptObj.login(smtpEmail, "aW6BceJkenh7hbz9ivjG")
                 smptObj.sendmail(smtpEmail, email, f"Your code {code}")
                 smptObj.quit()
-
+                print(code)
                 try:
                     confirmCode = int(input("Вам на почту выслан код подтверждения.\n"
                       "Введите его\n"))
@@ -47,10 +47,14 @@ def mainwindow():
                     print("Введены неверные данные")
                     time.sleep(2)
                     mainwindow()
-
                 if code == confirmCode:
 
-                    password = maskpass.askpass(prompt="Введите пароль: \n", mask="*")
+                    try:
+                        password = maskpass.askpass(prompt="Введите пароль: \n", mask="*")
+                    except UnicodeDecodeError:
+                        print("Вводите латиницу!")
+                        time.sleep(1)
+                        mainwindow()
                     confirmPassword = maskpass.askpass(prompt="Подтвердите пароль: \n", mask="*")
                     if (password == confirmPassword):
                         place = 0
@@ -73,14 +77,15 @@ def mainwindow():
                     mainwindow()
 
                 #Посыл кода на почту
-                smtpEmail = "test_test23r43@mail.ru"
+                smtpEmail = "fm_test_email_send@mail.ru"
                 code = random.randint(100,999)
+                
                 smptObj = smtp.SMTP("smtp.mail.ru", 587)
                 smptObj.starttls()
-                smptObj.login(smtpEmail, "m7x9NpBJaHR7mm12Hntu")
+                smptObj.login(smtpEmail, "aW6BceJkenh7hbz9ivjG")
                 smptObj.sendmail(smtpEmail, email, f"Your code {code}")
                 smptObj.quit()
-
+                print(code)
                 try:
                     confirmCode = int(input("Вам на почту выслан код подтверждения.\n"
                       "Введите его\n"))
@@ -88,9 +93,13 @@ def mainwindow():
                     print("Введены неверные данные")
                     time.sleep(2)
                     mainwindow()
-                
                 if code == confirmCode:
-                    password = maskpass.askpass(prompt="Введите пароль: \n", mask="*")
+                    try:
+                        password = maskpass.askpass(prompt="Введите пароль: \n", mask="*")
+                    except UnicodeDecodeError:
+                        print("Вводите латиницу!")
+                        time.sleep(1)
+                        mainwindow()
                     place = 1
                     Voice.Voicemethod(place, email, password)
                 else:

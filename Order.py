@@ -8,8 +8,8 @@ import Cheque
 import CloseOrder
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
-
-def Orders(userId):
+endIdHachapury = []
+def Orders(adminId, userId):
     _ = system('cls')
     try:
         count = int(input("Сколько хачапури желаете заказать?\n"
@@ -36,6 +36,7 @@ def Orders(userId):
                     costIngridient.append(row.Cost_Ingridient)
                     typeIngridient.append(row.Name_Type)
 
+
                 print("0 - Не выбирать ингридиент\n")
                 for i in range(len(nameIngridient)):
                     print(i+1, " - ", typeIngridient[i], " - ", nameIngridient[i], " - ", costIngridient[i], "Рублей \n")
@@ -52,7 +53,7 @@ def Orders(userId):
                     Orders(userId)
                         
                 if (ingridient <= countIngridient and ingridient > 0):
-                    ingridients.append(ingridient)
+                    ingridients.append(ingridient-1)
                 elif ingridient == 0:
                     print("Ну, нет - так нет...\n")
                 else:
@@ -80,14 +81,17 @@ def Orders(userId):
             cursor.execute(f"insert into [Hachapury] ([Cost_Hachapury]) values (100)")
             cnxn.commit()
             idHachapury = []
-            for row in cursor.execute("select * from [Hachapury]"):
-                idHachapury.append(row.ID_Hachapury)
+            #for row in cursor.execute("select * from [Hachapury]"):
+            #    idHachapury.append(row.ID_Hachapury)
 
-            for id in range(len(idHachapury)):
-                endIdHachapury = idHachapury[id]
+            for row in cursor.execute(f"select top 1 * from [Hachapury] order by [ID_Hachapury] desc"):
+                idHachapury = row.ID_Hachapury
+
+            endIdHachapury.append(idHachapury)
+            idCurrentHachapury = idHachapury
 
             for ingrid in range(len(ingridients)):
-                cursor.execute(f"insert into [Hachapury_Ingridient] ([Hachapury_ID], [Ingridient_ID]) values (?, ?)", (endIdHachapury, ingridients[ingrid]))
+                cursor.execute(f"insert into [Hachapury_Ingridient] ([Hachapury_ID], [Ingridient_ID]) values (?, ?)", (idCurrentHachapury, ingridients[ingrid]+1))
                 cnxn.commit()
                 
             idCheque = []
@@ -108,12 +112,12 @@ def Orders(userId):
             print("Завершаем оформление заказа...\n")
             time.sleep(2)
             count = 1        
-            CloseOrder.CloseOrder(userId, currentIdCheque, endIdHachapury, count)
+            CloseOrder.CloseOrder(adminId, userId, currentIdCheque, endIdHachapury, count)
         elif commit == "no" or commit == "нет":
             try:
-                toOrder = input("Выберите действие: \n"
+                toOrder = int(input("Выберите действие: \n"
                     "1 - Продолжить оформление заказа\n"
-                    "2 - Сбросить заказ\n")
+                    "2 - Сбросить заказ\n"))
             except ValueError:
                 print("Введены неверные данные")
                 Cheque.DropCheque(userId, currentIdCheque)
@@ -144,7 +148,7 @@ def Orders(userId):
             time.sleep(2)
             Orders(userId)
     elif count == 0:
-        CloseOrder.CloseOrder(userId, currentIdCheque, endIdHachapury, count)
+        CloseOrder.CloseOrder(adminId, userId, currentIdCheque, endIdHachapury, count)
     else:
         print("Введены неверные данные")
         time.sleep(2)

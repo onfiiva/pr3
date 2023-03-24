@@ -8,13 +8,16 @@ import toUser
 import Order
 cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Trusted_Connection=yes;')
 cursor = cnxn.cursor()
-def CloseOrder(userId, currentIdCheque, endIdHachapury, count):
+ingridientId = []
+def CloseOrder(adminId, userId, currentIdCheque, endIdHachapury, count):
     if count == 0:
         toUser.toUser(userId)
     for row in cursor.execute(f"select * from [User] where [ID_User] = {userId}"):
         balance = row.Balance_User
+    for row in cursor.execute(f"select * from [Admin] where [ID_Admin] = {adminId}"):
+        balanceAdmin = row.Balance_Admin
     for row in cursor.execute(f"select * from [Cheque] inner join [User] on [User_ID] = [ID_User] where [ID_Cheque] = {currentIdCheque}"):
-        phone = row.Phone_User
+        email = row.Email_User
         count = row.Count_Hachapury
         cost = row.Cost_Hachapury
         sum = row.Sum_Order
@@ -25,20 +28,23 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury, count):
     for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = {userId}"):
         loyalityDiscount = row.Discount
         nameLoyality = row.Name_Loyality
+    sum += count * cost
     discount = sum * loyalityDiscount
     print(f"Ваша скидка : {discount}")
     balance -= (sum - discount)
+    balanceAdmin += (sum - discount)
     if (balance >= 0):
         cursor.execute(f"update [User] set [Balance_User] = {balance} where [ID_User] = {userId}")
+        cnxn.commit()
+        cursor.execute(f"update [Admin] set [Balance_Admin] = {balanceAdmin} where [ID_Admin] = {adminId}")
         cnxn.commit()
     else:
         print("Недостаточно денег на счету.")
         time.sleep(2)
         Order.Orders(userId)
-
-    ingridientId = []
-    for row in cursor.execute(f"select * from [Hachapury_Ingridient] where [Hachapury_ID] = {endIdHachapury}"):
-        ingridientId.append(row.Ingridient_ID)
+    for i in range(len(endIdHachapury)):
+        for row in cursor.execute(f"select * from [Hachapury_Ingridient] where [Hachapury_ID] = {endIdHachapury[i]}"):
+            ingridientId.append(row.Ingridient_ID)
     directory = Path(pathlib.Path.cwd(), 'Cheques')
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -46,7 +52,7 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury, count):
     file = open(directory, 'w')
     file.write(f"Заказ №{currentIdCheque}\n"
                f"Время: {timeOrder}\n"
-               f"Пользователь: {phone}\n"
+               f"Пользователь: {email}\n"
                "\n"
                "Состав заказа: \n"
                "\n"
@@ -83,4 +89,4 @@ def CloseOrder(userId, currentIdCheque, endIdHachapury, count):
         cursor.execute(f"update [User] set [Loyality_ID] = 4 where [ID_User] = {userId}")
         cnxn.commit()
     time.sleep(2)
-    toUser.toUser(userId)
+    toUser.toUser(adminId, userId)

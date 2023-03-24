@@ -33,7 +33,7 @@ create table [Admin]
 go
 
 insert into [Admin] ([Email_Admin], [Password_Admin], [Balance_Admin]) values
-('isip_o.d.petrov@mpt.ru', '1234', 10000)
+('fm.ivanchenko@yandex.ru', '1234', 10000)
 go
 
 select * from [Admin]
@@ -88,7 +88,7 @@ create table [User]
 go
 
 insert into [User] ([Loyality_ID], [Email_User], [Password_User], [Balance_User]) values
-(1, 'olp201915@', '1234', 10000)
+(1, 'olp201915@gmail.com', '1234', 10000)
 go
 
 select * from [User]
@@ -197,3 +197,5 @@ go
 
 select * from [Cheque_Hachapury]
 go
+
+select top 1 * from [Hachapury] order by [ID_Hachapury] desc
