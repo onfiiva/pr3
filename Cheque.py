@@ -10,7 +10,12 @@ cnxn = pyodbc.connect('Driver={SQL Server};Server=FIIVA\DA;Database=Hachapury;Tr
 cursor = cnxn.cursor()
 
 def ChequeSumUpd(userId, currentIdCheque, endIdHachapury):
-    sum = 100
+    for row in cursor.execute(f"select * from [Cheque] inner join [User] on [User_ID] = [ID_User] where [ID_Cheque] = {currentIdCheque}"):
+        count = row.Count_Hachapury
+        cost = row.Cost_Hachapury
+        sum = row.Sum_Order
+    sum = 0
+    sum += count * cost
     ingridientId = []
     for i in range(len(endIdHachapury)):
         for row in cursor.execute(f"select * from [Hachapury_Ingridient] where [Hachapury_ID] = {endIdHachapury[i]}"):

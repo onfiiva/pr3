@@ -28,7 +28,7 @@ def CloseOrder(adminId, userId, currentIdCheque, endIdHachapury, count):
     for row in cursor.execute(f"select * from [User] inner join [Loyality] on [Loyality_ID] = [ID_Loyality] where [ID_User] = {userId}"):
         loyalityDiscount = row.Discount
         nameLoyality = row.Name_Loyality
-    sum += count * cost
+    
     discount = sum * loyalityDiscount
     print(f"Ваша скидка : {discount}")
     balance -= (sum - discount)
