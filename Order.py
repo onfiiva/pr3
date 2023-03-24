@@ -80,7 +80,6 @@ def Orders(adminId, userId):
 
             cursor.execute(f"insert into [Hachapury] ([Cost_Hachapury]) values (100)")
             cnxn.commit()
-            idHachapury = []
             #for row in cursor.execute("select * from [Hachapury]"):
             #    idHachapury.append(row.ID_Hachapury)
 
