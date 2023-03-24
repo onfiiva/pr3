@@ -42,9 +42,11 @@ def CloseOrder(adminId, userId, currentIdCheque, endIdHachapury, count):
         print("Недостаточно денег на счету.")
         time.sleep(2)
         Order.Orders(userId)
+
     for i in range(len(endIdHachapury)):
         for row in cursor.execute(f"select * from [Hachapury_Ingridient] where [Hachapury_ID] = {endIdHachapury[i]}"):
             ingridientId.append(row.Ingridient_ID)
+            
     directory = Path(pathlib.Path.cwd(), 'Cheques')
     if not os.path.exists(directory):
         os.makedirs(directory)
